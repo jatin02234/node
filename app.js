@@ -1,4 +1,3 @@
-const http = require('http');
 const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
@@ -7,17 +6,18 @@ const adminRouter = require('./routers/admin');
 const shopRouter = require('./routers/shop');
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/admin',adminRouter.router);
-app.use(shopRouter);
+app.set('view engine', 'ejs');
+// app.set('views', 'views');
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/admin', adminRouter);
+app.use(shopRouter);
+
 app.use((req, res, next) =>{
-    res.sendFile(path.join(__dirname, 'views', '404.html'));
+    res.status(404).render('404', { pageTitle: 'Page Not Found' });
 })
 
-// const server = http.createServer(routes.handler);
-const server = http.createServer(app);
 
-server.listen(4000);
+app.listen(4000);
